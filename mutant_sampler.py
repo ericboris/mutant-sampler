@@ -90,6 +90,19 @@ class MutantSampler:
         return sorted(mutant_dict, key=lambda x: len(mutant_dict[x]))
 
     @staticmethod
+    def get_event_types(mutant_dict: Dict[str, List[Any]]) -> List[str]:
+        """
+        Returns the event types in the order they appear in the dictionary.
+
+        Args:
+            mutant_dict: A dictionary containing event types as keys and mutant IDs as values.
+
+        Returns:
+            A list of event types.
+        """
+        return list(mutant_dict.keys())
+
+    @staticmethod
     def sample_from_event_type(
         df: pd.DataFrame,
         mutant_dict: Dict[str, List[Any]],
@@ -214,9 +227,9 @@ class MutantSampler:
         df = MutantSampler.add_method_id_column(df)
         df = MutantSampler.drop_duplicates(df)
         mutant_dict = MutantSampler.populate_mutant_dict(df)
-        sorted_event_types = MutantSampler.sort_event_types(mutant_dict)
+        event_types = MutantSampler.get_event_types(mutant_dict)
         sampled_data = MutantSampler.get_sampled_data_from_types(
-            df, mutant_dict, sorted_event_types, k
+            df, mutant_dict, event_types, k
         )
-        sampled_data = MutantSampler.remove_method_id_column(sampled_data)
+        # sampled_data = MutantSampler.remove_method_id_column(sampled_data)
         return sampled_data.sort_values(by='mutantId')
